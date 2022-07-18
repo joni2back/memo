@@ -1,0 +1,60 @@
+type Query {
+  memotests: [Memotest!]! @all
+  memotest(id: Int! @eq): Memotest @find
+
+  memotest_image(id: Int! @eq): MemotestImage @find
+  memotests_images: [MemotestImage!]! @all
+
+  game_sessions: [GameSession!]! @all
+  game_session(id: Int! @eq): GameSession @find
+}
+
+enum GameSessionState {
+  started @enum(value: started)
+  completed @enum(value: completed)
+}
+
+type GameSession {
+  id: ID!
+  retries: Int,
+  number_of_pairs: Int,
+  state: GameSessionState,
+  memotest: Memotest! @belongsTo
+}
+
+type Memotest {
+  id: ID!
+  name: String!
+  images: [MemotestImage!]! @hasMany
+  gameSessions: [GameSession!]! @hasMany
+}
+
+type MemotestImage {
+  id: ID!
+  url: String!
+  memotest: Memotest!
+}
+
+type Mutation {
+  createMemotest(name: String!): Memotest! @create
+  deleteMemotest(id: ID!): Memotest! @delete
+  updateMemotest(id: ID!, name: String!): Memotest @update
+
+  createMemoImage(url: String!, memotest_id: ID!): MemotestImage! @create
+  deleteMemoImage(id: ID!): MemotestImage @delete
+
+  createGameSession(
+    memotest_id: ID!,
+    retries: Int,
+    number_of_pairs: Int,
+    state: GameSessionState
+  ): GameSession! @create
+
+  deleteGameSession(id: ID!): GameSession! @delete
+  updateGameSession(
+    id: ID!,
+    number_of_pairs: Int,
+    retries: Int
+    state: GameSessionState
+  ): GameSession @update
+}
