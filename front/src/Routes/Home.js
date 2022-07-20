@@ -16,7 +16,7 @@ function Home() {
 
   const handlePlay = (memotest) => {
     if (! hasGameSession(memotest)) {
-      createGameSession(memotest.id).then(r => {
+      return createGameSession(memotest.id).then(r => {
         const gameSession = r.data.createGameSession;
         localStorage[`game_session_${memotest.id}`] = gameSession.id;
         navigate("/game-session/" + gameSession.id);
